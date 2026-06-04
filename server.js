@@ -1,7 +1,8 @@
 // ==========================================
 // 1. استدعاء المكتبات والـ Middleware
 // ==========================================
-require('dotenv').config(); // 👈 أضف هذا السطر في أول سطر تماماً لضمان قراءة المتغيرات من Render
+require('dotenv').config(); // 👈 هذا السطر السحري يجبر السيرفر على قراءة المتغيرات من Render فوراً!
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -16,8 +17,8 @@ app.use(express.json());
 // ==========================================
 // 2. الاتصال بقاعدة بيانات MongoDB
 // ==========================================
-// يقرأ السيرفر الرابط السحابي من Render عبر MONGODB_URI، وإذا لم يجده يتصل محلياً
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/NoMercyApply';
+// نقرأ الرابط من MONGODB_URI أو MONGO_URI لضمان القراءة مهما كان الاسم المكتوب في Render
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/NoMercyApply';
 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('✅ Connected successfully to MongoDB'))
