@@ -55,7 +55,7 @@
                     • لازم يكون عندك بريد إلكتروني (Email) صالح ومؤمن.<br>
                     • لازم يكون عندك هاتف أو جهاز شغال (للتحقق فقط).<br>
                     • وقت لعبك الأسبوعي في شبكة NoMercy لا يقل عن 8 ساعات.<br>
-                    • تكون عضو في سيرفر NoMercy Discord لمدة أسبوعين على الأثل.<br>
+                    • تكون عضو في سيرفر NoMercy Discord لمدة أسبوعين على الأقل.<br>
                     • القدرة على عمل المقابلة عبر مكالمة صوتية (Voice Call) على الـ Discord.<br>
                     • وجود خبرة سابقة في الستاف (Staff) يعتبر ميزة إضافية مو إجباري.<br>
                     • لازم التقديم يحتوي على 500 كلمة على الأقل.<br>
@@ -91,7 +91,7 @@
             <div class="question-card animate-card">
                 <div class="question-title">
                     <span class="q-number">3</span>
-                    <label class="translate-label" data-ar="كم عمرك؟" data-en="How old are you?">كم عمرك؟</label>
+                    <label class="translate-label" data-ar="كم عمرك؟" data-en="How old are you?">كم عمرك?</label>
                     <span class="required-tag">مطلوب</span>
                 </div>
                 <input type="number" id="mc-age" class="translate-placeholder" data-ar="اكتب إجابتك هنا..." data-en="Type your answer here..." placeholder="اكتب إجابتك هنا..." required>
@@ -253,7 +253,7 @@
             <div class="question-card animate-card">
                 <div class="question-title">
                     <span class="q-number">21</span>
-                    <label class="translate-label" data-ar="كيف بتتعامل مع لاعب يبني أشياء مخالفة أو غير لائقة داخل اللعبة؟" data-en="How do you deal with someone building inappropriate things in-game?">كيف بتتعامل مع لاعب يبني أشياء مخالفة أو غير لائقة داخل اللعبة؟</label>
+                    <label class="translate-label" data-ar="كيف بتتعامل مع لاعب يبني أشياء مخالفة أو غير لائقة داخل اللعبة?" data-en="How do you deal with someone building inappropriate things in-game?">كيف بتتعامل مع لاعب يبني أشياء مخالفة أو غير لائقة داخل اللعبة؟</label>
                     <span class="required-tag">مطلوب</span>
                 </div>
                 <textarea id="mc-building" class="translate-placeholder" data-ar="اكتب إجابتك هنا..." data-en="Type your answer here..." placeholder="اكتب إجابتك هنا..." rows="4" required></textarea>
@@ -329,9 +329,15 @@
             });
         });
 
-        // 🟢 كود الربط الجديد مع سيرفر الـ MongoDB الخاص بك لطلبات الماين كرافت 🟢
+        // 🟢 كود الربط المصلح والنهائي لسيرفر Render الخاص بك 🟢
         document.getElementById('minecraft-application-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // تعطيل زر الإرسال لتجنب السبام والتكرار في الـ Database
+            const submitBtn = document.getElementById('btn-submit');
+            const currentLang = htmlTag.getAttribute('lang') || 'ar';
+            submitBtn.disabled = true;
+            submitBtn.innerText = currentLang === 'ar' ? 'جاري الإرسال...' : 'Submitting...';
 
             const formData = {
                 ign: document.getElementById('mc-ign').value,
@@ -359,8 +365,8 @@
             };
 
             try {
-                // 🔴 استبدل الرابط بالرابط الحقيقي الخاص بك على Render 🔴
-                const response = await fetch('https://your-render-url.onrender.com/api/apply/minecraft', {
+                // الربط المباشر برابط سيرفر NoMercy الحقيقي على Render
+                const response = await fetch('https://nomercy-applications.onrender.com/api/apply/minecraft', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -368,14 +374,18 @@
 
                 const result = await response.json();
                 if (result.success) {
-                    alert('✅ تم إرسال طلب ماين كرافت بنجاح وحفظه!');
+                    alert(currentLang === 'ar' ? '✅ تم إرسال طلب ماين كرافت بنجاح وحفظه السحابي!' : '✅ Minecraft application submitted and saved successfully!');
                     window.location.href = 'index.html';
                 } else {
-                    alert('❌ خطأ أثناء الحفظ: ' + result.message);
+                    alert((currentLang === 'ar' ? '❌ خطأ أثناء الحفظ: ' : '❌ Saving error: ') + result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = staffTranslations[currentLang].submitBtn;
                 }
             } catch (error) {
                 console.error(error);
-                alert('❌ مشكلة في الاتصال بالسيرفر، يرجى المحاولة لاحقاً.');
+                alert(currentLang === 'ar' ? '❌ مشكلة في الاتصال بالسيرفر السحابي، يرجى المحاولة لاحقاً.' : '❌ Cloud server connection issue, please try again later.');
+                submitBtn.disabled = false;
+                submitBtn.innerText = staffTranslations[currentLang].submitBtn;
             }
         });
     </script>
