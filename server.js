@@ -15,7 +15,7 @@ app.use(express.json());
 // ==========================================
 // 2. الاتصال بقاعدة بيانات MongoDB
 // ==========================================
-// تأكد من إضافة المتغير MONGODB_URI في إعدادات البيئة (Environment Variables) على Render
+// يقرأ السيرفر الرابط السحابي من Render عبر MONGODB_URI، وإذا لم يجده يتصل محلياً
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/NoMercyApply';
 
 mongoose.connect(MONGO_URI)
