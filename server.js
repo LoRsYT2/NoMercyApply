@@ -58,7 +58,8 @@ app.post('/api/apply/discord', async (req, res) => {
 });
 
 // 🟢 التعديل والإصلاح هنا: تغيير '*' إلى '/*' ليتوافق مع Express الجديد ويفتح الفرونت إيند 🟢
-app.get('/*', (req, res) => {
+// بدلاً من استخدام app.get('/*', ...)، استخدم هذا السطر فقط:
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
