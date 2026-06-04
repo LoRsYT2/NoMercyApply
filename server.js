@@ -10,11 +10,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// 🟢 الباتش السحري: جعل السيرفر يقرأ ملفات الواجهة (HTML, CSS, JS) تلقائياً 🟢
+// جعل السيرفر يقرأ ملفات الواجهة (HTML, CSS, JS) تلقائياً
 app.use(express.static(path.join(__dirname)));
 
-// 2. الاتصال بقاعدة بيانات MongoDB (المربوطة مع Compass عندك)
-// تأكد من وضع رابط الاتصال الحقيقي الخاص بك في متغيّرات البيئة على Render باسم MONGO_URI
+// 2. الاتصال بقاعدة بيانات MongoDB Atlas لـ NoMercy
 const mongoURI = process.env.MONGO_URI || "mongodb+srv://username:password@cluster.mongodb.net/NoMercyDB";
 mongoose.connect(mongoURI)
     .then(() => console.log('✅ Connected to MongoDB Atlas / Compass'))
@@ -27,11 +26,11 @@ const applicationSchema = new mongoose.Schema({
     discordTag: String,
     age: Number,
     submittedAt: { type: Date, default: Date.now }
-}, { strict: false }); // strict: false تسمح باستقبال جميع حقول الأسئلة المختلفة تلقائياً
+}, { strict: false }); // استقبال كافة الحقول من الفورم تلقائياً
 
 const Application = mongoose.model('Application', applicationSchema);
 
-// 4. مسارات الـ API لاستقبال الطلبات من الفرونت إيند وحفظها
+// 4. مسارات الـ API لاستقبل الطلبات وحفظها
 app.post('/api/apply/minecraft', async (req, res) => {
     try {
         const newApp = new Application({
@@ -45,7 +44,6 @@ app.post('/api/apply/minecraft', async (req, res) => {
     }
 });
 
-// 5. مسار استقبال طلبات الديسكورد (إذا كنت تستخدمه في صفحة أخرى)
 app.post('/api/apply/discord', async (req, res) => {
     try {
         const newApp = new Application({
@@ -59,8 +57,8 @@ app.post('/api/apply/discord', async (req, res) => {
     }
 });
 
-// 🟢 الباتش الرئيسي: فتح صفحة الواجهة فوراً عند دخول الرابط 🟢
-app.get('*', (req, res) => {
+// 🟢 التعديل والإصلاح هنا: تغيير '*' إلى '/*' ليتوافق مع Express الجديد ويفتح الفرونت إيند 🟢
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
