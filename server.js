@@ -1,6 +1,7 @@
 // ==========================================
 // 1. استدعاء المكتبات والـ Middleware
 // ==========================================
+require('dotenv').config(); // 👈 أضف هذا السطر في أول سطر تماماً لضمان قراءة المتغيرات من Render
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
