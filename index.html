@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoMercy | Apply</title>
+    <!-- Icons & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- ستايل مخصص لزر تغيير اللغة ليتناسق تلقائياً مع موقعك -->
+    <style>
+        .lang-btn {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #a855f7;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        .lang-btn:hover {
+            background: #a855f7;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand-logo">NoMercy</div>
+            <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
+                <!-- زر تغيير اللغة المضاف -->
+                <button id="lang-toggle" class="lang-btn">
+                    <i class="fa-solid fa-language"></i> <span id="lang-text">English</span>
+                </button>
+                <a href="index.html" class="nav-item active" id="nav-home"><i class="fa-solid fa-house"></i> الرئيسية</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <h1 id="main-title">الاستمارات المتاحة</h1>
+            <p id="main-desc">اختر الاستمارة المناسبة للبدء في تقديم طلبك.</p>
+        </header>
+
+        <section class="forms-grid">
+            
+            <!-- Staff Card -->
+            <div class="form-card animate-card">
+                <div class="card-top-row">
+                    <div class="card-icon-wrapper">
+                        <i class="fa-solid fa-file-lines card-icon"></i>
+                    </div>
+                    <span class="status-indicator open" id="status-open-1">
+                        <span class="dot"></span> مفتوح
+                    </span>
+                </div>
+                <h3 id="card1-title">تقديم إداري (Staff)</h3>
+                <p id="card1-desc">مرحباً بك في استمارة التقديم الرسمية لطاقم NoMercy. يرجى ملء البيانات بدقة وأمانة وسيتم مراجعة طلبك.</p>
+                <a href="staff-form.html" class="btn-submit" id="card1-btn">تقديم الآن <i class="fa-solid fa-arrow-left"></i></a>
+            </div>
+
+            <!-- Discord Staff Card -->
+            <div class="form-card animate-card">
+                <div class="card-top-row">
+                    <div class="card-icon-wrapper">
+                        <i class="fa-brands fa-discord card-icon"></i>
+                    </div>
+                    <span class="status-indicator open" id="status-open-2">
+                        <span class="dot"></span> مفتوح
+                    </span>
+                </div>
+                <h3 id="card2-title">إدارة الديسكورد</h3>
+                <p id="card2-desc">شروط التقديم لفريق ديسكورد: أن يكون العمر 16 سنة فما فوق، حساب نشط، وخالٍ من المخالفات السابقة والتفاعل اليومي.</p>
+                <a href="discord-form.html" class="btn-submit" id="card2-btn">تقديم الآن <i class="fa-solid fa-arrow-left"></i></a>
+            </div>
+
+            <!-- Content Creator Card -->
+            <div class="form-card animate-card">
+                <div class="card-top-row">
+                    <div class="card-icon-wrapper">
+                        <i class="fa-solid fa-clapperboard card-icon"></i>
+                    </div>
+                    <span class="status-indicator close-status" id="status-close-1">
+                        <span class="dot"></span> مغلق
+                    </span>
+                </div>
+                <h3 id="card3-title">صانع محتوى (Content Creator)</h3>
+                <p id="card3-desc"></p>
+                <span class="status-badge" id="badge-lock-1"><i class="fa-solid fa-lock"></i> مغلق حالياً</span>
+            </div>
+
+            <!-- Alpha Tester Card (Closed) -->
+            <div class="form-card closed animate-card">
+                <div class="card-top-row">
+                    <div class="card-icon-wrapper">
+                        <i class="fa-solid fa-flask card-icon"></i>
+                    </div>
+                    <span class="status-indicator close-status" id="status-close-2">
+                        <span class="dot"></span> مغلق
+                    </span>
+                </div>
+                <h3 id="card4-title">مطور تجريبي (Alpha Tester)</h3>
+                <p id="card4-desc"></p>
+                <span class="status-badge" id="badge-lock-2"><i class="fa-solid fa-lock"></i> مغلق حالياً</span>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- سكربت نظام الترجمة الذكي المضاف -->
+    <script>
+        const langToggle = document.getElementById('lang-toggle');
+        const langText = document.getElementById('lang-text');
+        const htmlTag = document.documentElement;
+
+        const translations = {
+            ar: {
+                toggleText: "English",
+                home: "<i class='fa-solid fa-house'></i> الرئيسية",
+                mainTitle: "الاستمارات المتاحة",
+                mainDesc: "اختر الاستمارة المناسبة للبدء في تقديم طلبك.",
+                statusOpen: "<span class='dot'></span> مفتوح",
+                statusClosed: "<span class='dot'></span> مغلق",
+                badgeLock: "<i class='fa-solid fa-lock'></i> مغلق حالياً",
+                
+                card1Title: "تقديم إداري (Staff)",
+                card1Desc: "مرحباً بك في استمارة التقديم الرسمية لطاقم NoMercy. يرجى ملء البيانات بدقة وأمانة وسيتم مراجعة طلبك.",
+                card1Btn: "تقديم الآن <i class='fa-solid fa-arrow-left'></i>",
+                
+                card2Title: "إدارة الديسكورد",
+                card2Desc: "شروط التقديم لفريق ديسكورد: أن يكون العمر 16 سنة فما فوق، حساب نشط، وخالٍ من المخالفات السابقة والتفاعل اليومي.",
+                card2Btn: "تقديم الآن <i class='fa-solid fa-arrow-left'></i>",
+                
+                card3Title: "صانع محتوى (Content Creator)",
+                card3Desc: "هل أنت يوتيوبر، ستريمر، أو صانع محتوى على تيك توك؟ انضم إلى مجتمع NoMercy واحصل على رتبة دعم مميزة داخل السيرفر.",
+                
+                card4Title: "مطور تجريبي (Alpha Tester)",
+                card4Desc: "التقديم مغلق حالياً. يفتح هذا القسم عند الحاجة لتجربة الأنظمة والألعاب القادمة قبل إطلاقها رسميًا لجميع اللاعبين."
+            },
+            en: {
+                toggleText: "العربية",
+                home: "<i class='fa-solid fa-house'></i> Home",
+                mainTitle: "Available Applications",
+                mainDesc: "Choose the appropriate form to start your application.",
+                statusOpen: "<span class='dot'></span> Open",
+                statusClosed: "<span class='dot'></span> Closed",
+                badgeLock: "<i class='fa-solid fa-lock'></i> Currently Closed",
+                
+                card1Title: "Staff Application",
+                card1Desc: "Welcome to the official NoMercy staff application form. Please fill in the details accurately and honestly; your application will be reviewed.",
+                card1Btn: "Apply Now <i class='fa-solid fa-arrow-right'></i>",
+                
+                card2Title: "Discord Moderation",
+                card2Desc: "Requirements for the Discord team: 16 years old or above, active account, no previous violations, and daily interaction.",
+                card2Btn: "Apply Now <i class='fa-solid fa-arrow-right'></i>",
+                
+                card3Title: "Content Creator",
+                card3Desc: "",
+                
+                card4Title: "Alpha Tester",
+                card4Desc: ""
+            }
+        };
+
+        langToggle.addEventListener('click', () => {
+            const currentLang = htmlTag.getAttribute('lang') === 'ar' ? 'en' : 'ar';
+            
+            // تحديث خصائص الاتجاه واللغة في تاج الـ HTML
+            htmlTag.setAttribute('lang', currentLang);
+            htmlTag.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+            // تبديل النصوص والبيانات بناءً على اللغة المختارة
+            langText.innerText = translations[currentLang].toggleText;
+            document.getElementById('nav-home').innerHTML = translations[currentLang].home;
+            document.getElementById('main-title').innerText = translations[currentLang].mainTitle;
+            document.getElementById('main-desc').innerText = translations[currentLang].mainDesc;
+            
+            // رادارات الحالة البصرية (مفتوح / مغلق)
+            document.getElementById('status-open-1').innerHTML = translations[currentLang].statusOpen;
+            document.getElementById('status-open-2').innerHTML = translations[currentLang].statusOpen;
+            document.getElementById('status-close-1').innerHTML = translations[currentLang].statusClosed;
+            document.getElementById('status-close-2').innerHTML = translations[currentLang].statusClosed;
+            
+            // شارات القفل
+            document.getElementById('badge-lock-1').innerHTML = translations[currentLang].badgeLock;
+            document.getElementById('badge-lock-2').innerHTML = translations[currentLang].badgeLock;
+
+            // الكروت التقديمية
+            document.getElementById('card1-title').innerText = translations[currentLang].card1Title;
+            document.getElementById('card1-desc').innerText = translations[currentLang].card1Desc;
+            document.getElementById('card1-btn').innerHTML = translations[currentLang].card1Btn;
+
+            document.getElementById('card2-title').innerText = translations[currentLang].card2Title;
+            document.getElementById('card2-desc').innerText = translations[currentLang].card2Desc;
+            document.getElementById('card2-btn').innerHTML = translations[currentLang].card2Btn;
+
+            document.getElementById('card3-title').innerText = translations[currentLang].card3Title;
+            document.getElementById('card3-desc').innerText = translations[currentLang].card3Desc;
+
+            document.getElementById('card4-title').innerText = translations[currentLang].card4Title;
+            document.getElementById('card4-desc').innerText = translations[currentLang].card4Desc;
+        });
+    </script>
+</body>
+</html>
