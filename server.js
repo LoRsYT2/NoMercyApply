@@ -1,106 +1,70 @@
-// ==========================================
-// 1. استدعاء المكتبات والـ Middleware
-// ==========================================
-require('dotenv').config(); // 👈 هذا السطر السحري يجبر السيرفر على قراءة المتغيرات من Render فوراً!
-
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// تفعيل الحماية والسماح للفرونت إيند بإرسال البيانات للسيرفر بدون مشاكل CORS
+// 1. برمجيات وسيطة (Middleware)
 app.use(cors());
-// تفعيل قراءة البيانات القادمة بصيغة JSON من صفحات الـ HTML
 app.use(express.json());
 
-// ==========================================
-// 2. الاتصال بقاعدة بيانات MongoDB
-// ==========================================
-// نقرأ الرابط من MONGODB_URI أو MONGO_URI لضمان القراءة مهما كان الاسم المكتوب في Render
-const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/NoMercyApply';
+// 🟢 الباتش السحري: جعل السيرفر يقرأ ملفات الواجهة (HTML, CSS, JS) تلقائياً 🟢
+app.use(express.static(path.join(__dirname)));
 
-mongoose.connect(MONGO_URI)
-    .then(() => console.log('✅ Connected successfully to MongoDB'))
-    .catch((err) => console.error('❌ MongoDB connection error:', err));
+// 2. الاتصال بقاعدة بيانات MongoDB (المربوطة مع Compass عندك)
+// تأكد من وضع رابط الاتصال الحقيقي الخاص بك في متغيّرات البيئة على Render باسم MONGO_URI
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://username:password@cluster.mongodb.net/NoMercyDB";
+mongoose.connect(mongoURI)
+    .then(() => console.log('✅ Connected to MongoDB Atlas / Compass'))
+    .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
-// ==========================================
-// 3. موديلات قاعدة البيانات (Schemas)
-// ==========================================
+// 3. تصميم الـ Schema والموديل لحفظ الطلبات
+const applicationSchema = new mongoose.Schema({
+    type: String, // 'minecraft' أو 'discord'
+    ign: String,
+    discordTag: String,
+    age: Number,
+    submittedAt: { type: Date, default: Date.now }
+}, { strict: false }); // strict: false تسمح باستقبال جميع حقول الأسئلة المختلفة تلقائياً
 
-// أ. موديل طلبات الديسكورد
-const DiscordApplySchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    id: { type: String, required: true },
-    age: { type: Number, required: true },
-    reason: { type: String, required: true },
-    experience: { type: String, required: true },
-    status: { type: String, default: 'Pending' }, // الحالات: Pending, Accepted, Rejected
-    appliedAt: { type: Date, default: Date.now }
-});
-const DiscordApply = mongoose.model('DiscordApply', DiscordApplySchema);
+const Application = mongoose.model('Application', applicationSchema);
 
-// ب. موديل طلبات الماين كرافت (الـ 22 سؤال كاملة بالترتيب)
-const MinecraftApplySchema = new mongoose.Schema({
-    ign: { type: String, required: true },
-    discordTag: { type: String, required: true },
-    age: { type: Number, required: true },
-    canRecordMic: { type: String, required: true },
-    countryTimezone: { type: String, required: true },
-    languages: { type: String, required: true },
-    prevExperience: { type: String, required: true },
-    playtimeDetails: { type: String, required: true },
-    meaningOfStaff: { type: String, required: true },
-    whyChooseYou: { type: String, required: true },
-    opinionOnCurrentStaff: { type: String, required: true },
-    teamworkExperience: { type: String, required: true },
-    mostContactedStaff: { type: String, required: true },
-    racismScenario: { type: String, required: true },
-    swearingScenario: { type: String, required: true },
-    ddosThreatScenario: { type: String, required: true },
-    cheatingSuspicionScenario: { type: String, required: true },
-    maliciousLinkScenario: { type: String, required: true },
-    gangNamePunishment: { type: String, required: true },
-    missingRankScenario: { type: String, required: true },
-    illegalBuildingScenario: { type: String, required: true },
-    staffAbuseScenario: { type: String, required: true },
-    status: { type: String, default: 'Pending' }, // الحالات: Pending, Accepted, Rejected
-    appliedAt: { type: Date, default: Date.now }
-});
-const MinecraftApply = mongoose.model('MinecraftApply', MinecraftApplySchema);
-
-// ==========================================
-// 4. مسارات استقبال التقديمات (Routes)
-// ==========================================
-
-// مسار استقبال طلب ديسكورد وحفظه في MongoDB
-app.post('/api/apply/discord', async (req, res) => {
-    try {
-        const newApplication = new DiscordApply(req.body);
-        await newApplication.save();
-        res.status(201).json({ success: true, message: 'تم حفظ طلب الديسكورد بنجاح في قاعدة البيانات!' });
-    } catch (error) {
-        console.error('Error saving Discord application:', error);
-        res.status(500).json({ success: false, message: 'حدث خطأ أثناء الحفظ في القاعدة.' });
-    }
-});
-
-// مسار استقبال طلب ماين كرافت وحفظه في MongoDB
+// 4. مسارات الـ API لاستقبال الطلبات من الفرونت إيند وحفظها
 app.post('/api/apply/minecraft', async (req, res) => {
     try {
-        const newApplication = new MinecraftApply(req.body);
-        await newApplication.save();
-        res.status(201).json({ success: true, message: 'تم حفظ طلب الماين كرافت بنجاح في قاعدة البيانات!' });
+        const newApp = new Application({
+            type: 'minecraft',
+            ...req.body
+        });
+        await newApp.save();
+        res.status(200).json({ success: true, message: 'تم حفظ طلب الماين كرافت بنجاح!' });
     } catch (error) {
-        console.error('Error saving Minecraft application:', error);
-        res.status(500).json({ success: false, message: 'حدث خطأ أثناء الحفظ في القاعدة.' });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// ==========================================
-// 5. مسار تشغيل السيرفر
-// ==========================================
-const PORT = process.env.PORT || 3000;
+// 5. مسار استقبال طلبات الديسكورد (إذا كنت تستخدمه في صفحة أخرى)
+app.post('/api/apply/discord', async (req, res) => {
+    try {
+        const newApp = new Application({
+            type: 'discord',
+            ...req.body
+        });
+        await newApp.save();
+        res.status(200).json({ success: true, message: 'تم حفظ طلب الديسكورد بنجاح!' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// 🟢 الباتش الرئيسي: فتح صفحة الواجهة فوراً عند دخول الرابط 🟢
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// تشغيل السيرفر
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
 });
